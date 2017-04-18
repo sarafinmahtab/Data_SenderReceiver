@@ -70,8 +70,8 @@ public class MyController implements Initializable {
 	
 	@FXML
 	public void receiveData() {
-//		mc = new MyClient("192.168.0.63");
-		mc = new MyClient("10.100.6.85");
+		mc = new MyClient("192.168.0.63");
+//		mc = new MyClient("10.100.6.85");
 //		mc = new MyClient("127.0.0.1");
 		
 		if(mc.client.isConnected()) {
