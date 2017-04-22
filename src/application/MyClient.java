@@ -25,20 +25,18 @@ public class MyClient{
 			 								specifying the server name and the port number to connect to. */
 			
 			DataOutputStream dataOp = new DataOutputStream(client.getOutputStream());
-			dataOp.writeUTF("Sabir Sir is my most favourite teacher!!!");
+			Handler.setClientMsg("Sabir Sir is my most favourite teacher");
+			dataOp.writeUTF(Handler.getClientMsg());
 			
 			DataInputStream dataIp = new DataInputStream(client.getInputStream());
 			msg = dataIp.readUTF();
 			System.out.println(msg);
+			Handler.setServerMsg(msg);
 			
 			client.close();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static String getMsg() {
-		return msg;
 	}
 }

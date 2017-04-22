@@ -28,6 +28,8 @@ public class MyController implements Initializable {
 	@FXML Label status, ipAdd, data;
 	@FXML TextField messages;
 	
+	boolean isClient = false, clientDataInput = false;
+	
 	@FXML
 	public void browse() throws MalformedURLException {
         FileChooser fileChooser = new FileChooser();
@@ -57,7 +59,8 @@ public class MyController implements Initializable {
 		dataMsg = messages.getText();
 		
 		try {
-			t = new MyServer(dataMsg);
+			Handler.setServerMsg(dataMsg);
+			t = new MyServer();
 			t.start();
 			
 			status.setText("Seaching clients....");
@@ -69,14 +72,14 @@ public class MyController implements Initializable {
 	}
 	
 	@FXML
-	public void receiveData() {
+	public void receiveData() {		
 		mc = new MyClient("192.168.0.63");
-//		mc = new MyClient("10.100.6.85");
+//		mc = new MyClient("10.100.5.145");
 //		mc = new MyClient("127.0.0.1");
 		
 		if(mc.client.isConnected()) {
 			status.setText("Connected to Cilent");
-			data.setText(MyClient.getMsg());
+			data.setText(Handler.getServerMsg());
 		} else {
 			status.setText("Not Connected");
 		}

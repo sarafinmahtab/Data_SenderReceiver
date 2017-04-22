@@ -12,15 +12,12 @@ public class MyServer extends Thread{
 	
 	private ServerSocket serverSocket;
 	private Socket server;
-	public static String myMsg;
 	
-	public MyServer(String myMsg) {
-		MyServer.myMsg = myMsg;
-		
+	public MyServer() {		
 		try {
 			serverSocket = new ServerSocket(3000); /*server instantiates a ServerSocket object,
 			 										denoting which port number communication is to occur on. */
-		    serverSocket.setSoTimeout(10000);
+		    serverSocket.setSoTimeout(30000);
 		} catch (IOException e) {
 			
 		}
@@ -41,7 +38,6 @@ public class MyServer extends Thread{
 //				dataOp.writeUTF("Welcome to Socket Programming");
 				dataOp.writeUTF(myMsg);
 				*/
-				
 			} catch(SocketTimeoutException e) {
 	            break;
 			} catch(NullPointerException e) {
