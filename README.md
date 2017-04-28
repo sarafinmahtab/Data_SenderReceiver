@@ -2,7 +2,8 @@
 This is a java app for my OS Project.
 * Can send data & receive data through ip.
 * Multiple Client can be connected to one Server.
+* Server & Client both can communicate.
 ### Status
 ```
-Now Working in Making an app like SHAREIT.
+Now Working in Chatting & Multi-Client Management.
 ```
