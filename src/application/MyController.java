@@ -25,11 +25,12 @@ import javafx.stage.Stage;
  * @author Arafin
  *
  */
-public class MyController implements Initializable {
+public class MyController implements Initializable, Runnable {
 	
 	private String dataStr, dataMsg;
+	private int index = 0;
 	
-	private Thread t;
+	private Thread t, updater;
 	private MyClient myClient;
 	
 	Button send, receive;
@@ -37,9 +38,10 @@ public class MyController implements Initializable {
 	@FXML TextField messages;
 	
 	public static ArrayList<String> arrayList = new ArrayList<>();
+	private ArrayList<String> list = new ArrayList<>();
 	private ObservableList<String> dataList;
-
-	boolean isClient = false, clientDataInput = false;
+	
+	static boolean isClient = false, clientDataInput = false;
 	
 	@FXML
 	public void openServer() {
@@ -56,7 +58,7 @@ public class MyController implements Initializable {
 	
 	@FXML
 	public void connectServer() {
-		isClient = false;
+		isClient = true;
 		
 		myClient = new MyClient("192.168.0.63");
 //		mc = new MyClient("10.100.5.145");
@@ -72,26 +74,52 @@ public class MyController implements Initializable {
 	@FXML
 	public void sendData() {
 		dataMsg = messages.getText();
-		Handler.setServerMsg(dataMsg);
-		new ClientHandler().start();
+		
+		if(isClient) {
+			try {
+				clientDataInput = true;
+				Handler.setClientMsg(dataMsg);
+				myClient.sendDataToServer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			clientDataInput = false;
+			Handler.setServerMsg(dataMsg);
+			new ClientHandler().start();
+		}
 	}
 	
 	@FXML
-	public void receiveData() {		
-		try {
-			myClient.connectServer();
-			data.setText(Handler.getServerMsg());
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void receiveData() {
+		if(isClient) {
+			try {
+				clientDataInput = false;
+				myClient.receiveDataFromServer();
+				data.setText(Handler.getServerMsg());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			clientDataInput = true;
+			new ClientHandler().start();
+			
+			list.add(Handler.getClientMsg());
+			while(Handler.getClientMsg() == list.get(index)) {
+				continue;
+			}
+			data.setText(Handler.getClientMsg());
+			index++;
 		}
+	}
+	
+	@Override
+	public void run() {
+		
 	}
 	
 	@FXML
 	public void devices() {
-		if(isClient) {
-			System.out.println("You're a Client");
-		}
-		
         final Stage deviceList = new Stage();
         deviceList.initModality(Modality.APPLICATION_MODAL);
         deviceList.initOwner(Main.getStage());
@@ -140,7 +168,10 @@ public class MyController implements Initializable {
 	
 	@Override
 	public void initialize(URL address, ResourceBundle resource) {
-						
+		
+		updater = new Thread(this, "Updater");
+		updater.start();
+		
 //		InetAddress ipA;
 //		
 //		try {

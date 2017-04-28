@@ -11,7 +11,7 @@ public class ClientHandler extends Thread {
 	
 	private Socket socket;
 
-	private String msg;
+	static String msg;
 	
 	public ClientHandler() {
 		socket = Handler.getSocketServer();
@@ -20,14 +20,15 @@ public class ClientHandler extends Thread {
 	@Override
 	public void run() {
 		try {
-			DataInputStream dataIp = new DataInputStream(socket.getInputStream());
-			msg = dataIp.readUTF();
-			Handler.setClientMsg(msg);
-			System.out.println(Handler.getClientMsg());
-			
-			DataOutputStream dataOp = new DataOutputStream(socket.getOutputStream());
-			dataOp.writeUTF(Handler.getServerMsg());
-			
+			if(MyController.clientDataInput) {
+				DataInputStream dataIp = new DataInputStream(socket.getInputStream());
+				msg = dataIp.readUTF();
+				Handler.setClientMsg(msg);
+//				System.out.println(Handler.getClientMsg() + " from Client");
+			} else {
+				DataOutputStream dataOp = new DataOutputStream(socket.getOutputStream());
+				dataOp.writeUTF(Handler.getServerMsg());
+			}
 		} catch(NullPointerException e) {
             return;
 		} catch (IOException e) {

@@ -23,16 +23,22 @@ public class MyClient{
 		}
 	}
 	
-	public void connectServer() throws IOException {
+	public void receiveDataFromServer() throws IOException {
 		try {
-			DataOutputStream dataOp = new DataOutputStream(client.getOutputStream());
-			Handler.setClientMsg(InetAddress.getLocalHost().getHostName() + "\nMessages from Client");
-			dataOp.writeUTF(Handler.getClientMsg());
-			
 			DataInputStream dataIp = new DataInputStream(client.getInputStream());
 			msg = dataIp.readUTF();
 			Handler.setServerMsg(msg);
-			System.out.println(Handler.getServerMsg());
+//			System.out.println(Handler.getServerMsg() + " from Server");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendDataToServer() throws IOException {
+		try {
+			DataOutputStream dataOp = new DataOutputStream(client.getOutputStream());
+//			Handler.setClientMsg(InetAddress.getLocalHost().getHostName() + "\nMessages from Client");
+			dataOp.writeUTF(Handler.getClientMsg());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
