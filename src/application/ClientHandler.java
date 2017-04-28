@@ -1,36 +1,33 @@
 package application;
 
+import java.net.*;
+import java.io.*;
+
 /**
  * @author Arafin
  *
  */
-
-import java.net.*;
-import java.io.*;
-
 public class ClientHandler extends Thread {
 	
 	private Socket socket;
-	private DataInputStream dataIp;
-	private DataOutputStream dataOp;
+
 	private String msg;
 	
-	public ClientHandler(Socket socket) {
-		this.socket = socket;
-		dataIp = null;
-		dataOp = null;
+	public ClientHandler() {
+		socket = Handler.getSocketServer();
 	}
 	
 	@Override
 	public void run() {
 		try {
-			dataIp = new DataInputStream(socket.getInputStream());
+			DataInputStream dataIp = new DataInputStream(socket.getInputStream());
 			msg = dataIp.readUTF();
-			System.out.println(msg);
+			Handler.setClientMsg(msg);
+			System.out.println(Handler.getClientMsg());
 			
-			dataOp = new DataOutputStream(socket.getOutputStream());
-//			dataOp.writeUTF("Welcome to Socket Programming");
+			DataOutputStream dataOp = new DataOutputStream(socket.getOutputStream());
 			dataOp.writeUTF(Handler.getServerMsg());
+			
 		} catch(NullPointerException e) {
             return;
 		} catch (IOException e) {
@@ -38,30 +35,6 @@ public class ClientHandler extends Thread {
 		} catch(Exception e) {
 			e.printStackTrace();
             return;
-		} finally {
-			if(dataIp != null) {
-				try {
-					dataIp.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if(dataOp != null) {
-				try {
-					dataOp.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if(socket != null) {
-				try {
-					dataIp.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 }

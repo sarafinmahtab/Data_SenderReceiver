@@ -1,17 +1,19 @@
 package application;
 
+import java.net.*;
+import java.io.*;
+
 /**
  * @author Arafin
  *
  */
-
-import java.net.*;
-import java.io.*;
-
 public class MyServer extends Thread{
 	
 	private ServerSocket serverSocket;
 	private Socket server;
+	private String ipAdd;
+	
+	public static boolean connected = false;
 	
 	public MyServer() {		
 		try {
@@ -26,18 +28,15 @@ public class MyServer extends Thread{
 	@Override
 	public void run() {
 		while(true) {
-			try {			
+			try {
 				server = serverSocket.accept(); //This method waits until a client connects to the server on the given port
 				
-/*//				System.out.println("Connected to Client");
-				DataInputStream dataIp = new DataInputStream(server.getInputStream());
-				String msg = dataIp.readUTF();
-				System.out.println(msg);
-
-				DataOutputStream dataOp = new DataOutputStream(server.getOutputStream());
-//				dataOp.writeUTF("Welcome to Socket Programming");
-				dataOp.writeUTF(myMsg);
-				*/
+//				System.out.println(server + "This is server");
+				ipAdd = server.getRemoteSocketAddress().toString();
+				if(ipAdd != null) {
+					connected = true;
+				}
+				MyController.arrayList.add(ipAdd);
 			} catch(SocketTimeoutException e) {
 	            break;
 			} catch(NullPointerException e) {
@@ -49,7 +48,7 @@ public class MyServer extends Thread{
 				break;
 			}
 			
-			new ClientHandler(server).start();
+			Handler.setSocketServer(server);
 		}
 	}
 }

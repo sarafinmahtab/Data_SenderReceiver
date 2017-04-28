@@ -1,40 +1,38 @@
 package application;
 
+import java.net.*;
+import java.io.*;
+
 /**
  * @author Arafin
  *
  */
-
-import java.net.*;
-import java.io.*;
-
 public class MyClient{
 	
 	String ip;
 	Socket client;
-	public static String msg;
+	public static String msg, ipAdd;
 	
 	public MyClient(String ip) {
-		this.ip = ip;
-		connectServer();
+		try {
+			client = new Socket(ip, 3000);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void connectServer() {
+	public void connectServer() throws IOException {
 		try {
-			client = new Socket(ip, 3000); /* After the server is waiting, a client instantiates a Socket object,
-			 								specifying the server name and the port number to connect to. */
-			
 			DataOutputStream dataOp = new DataOutputStream(client.getOutputStream());
-			Handler.setClientMsg("Sabir Sir is my most favourite teacher");
+			Handler.setClientMsg(InetAddress.getLocalHost().getHostName() + "\nMessages from Client");
 			dataOp.writeUTF(Handler.getClientMsg());
 			
 			DataInputStream dataIp = new DataInputStream(client.getInputStream());
 			msg = dataIp.readUTF();
-			System.out.println(msg);
 			Handler.setServerMsg(msg);
-			
-			client.close();
-			
+			System.out.println(Handler.getServerMsg());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
