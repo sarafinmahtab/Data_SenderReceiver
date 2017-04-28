@@ -1,34 +1,36 @@
 package application;
 
-import java.net.*;
-import java.io.*;
-
 /**
  * @author Arafin
  *
  */
+
+import java.net.*;
+import java.io.*;
+
 public class ClientHandler extends Thread {
 	
 	private Socket socket;
-
-	static String msg;
+	private DataInputStream dataIp;
+	private DataOutputStream dataOp;
+	private String msg;
 	
-	public ClientHandler() {
-		socket = Handler.getSocketServer();
+	public ClientHandler(Socket socket) {
+		this.socket = socket;
+		dataIp = null;
+		dataOp = null;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			if(MyController.clientDataInput) {
-				DataInputStream dataIp = new DataInputStream(socket.getInputStream());
-				msg = dataIp.readUTF();
-				Handler.setClientMsg(msg);
-//				System.out.println(Handler.getClientMsg() + " from Client");
-			} else {
-				DataOutputStream dataOp = new DataOutputStream(socket.getOutputStream());
-				dataOp.writeUTF(Handler.getServerMsg());
-			}
+			dataIp = new DataInputStream(socket.getInputStream());
+			msg = dataIp.readUTF();
+			System.out.println(msg);
+			
+			dataOp = new DataOutputStream(socket.getOutputStream());
+//			dataOp.writeUTF("Welcome to Socket Programming");
+			dataOp.writeUTF(Handler.getServerMsg());
 		} catch(NullPointerException e) {
             return;
 		} catch (IOException e) {
@@ -36,6 +38,30 @@ public class ClientHandler extends Thread {
 		} catch(Exception e) {
 			e.printStackTrace();
             return;
+		} finally {
+			if(dataIp != null) {
+				try {
+					dataIp.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(dataOp != null) {
+				try {
+					dataOp.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(socket != null) {
+				try {
+					dataIp.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

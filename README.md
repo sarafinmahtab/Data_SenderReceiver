@@ -1,9 +1,5 @@
 # Data_SenderReceiver
 This is a java app for my OS Project.
-* Can send data & receive data through ip.
-* Multiple Client can be connected to one Server.
-* Server & Client both can communicate.
-### Status
-```
-Now Working in Chatting & Multi-Client Management.
-```
+	1. Can send data & receive data through ip.
+	2. Multiple Client can be connected to one Server.
+Now Working in Making an app like SHAREIT.
